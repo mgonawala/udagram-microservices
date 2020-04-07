@@ -19,3 +19,12 @@ before_install:
 
 install:
   - docker-compose -f udacity-c3-deployment/docker/docker-compose-build.yaml build --parallel
+
+after_success:
+  - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+  - docker tag $DOCKER_USER/frontend $DOCKER_USER/frontend:$TRAVIS_BUILD_NUMBER
+  - docker tag $DOCKER_USER/backend-user $DOCKER_USER/backend-user:$TRAVIS_BUILD_NUMBER
+  - docker tag $DOCKER_USER/backend-feed $DOCKER_USER/backend-feed:$TRAVIS_BUILD_NUMBER
+  - docker push $DOCKER_USER/frontend:$TRAVIS_BUILD_NUMBER
+  - docker push $DOCKER_USER/backend-feed:$TRAVIS_BUILD_NUMBER
+  - docker push $DOCKER_USER/backend-user:$TRAVIS_BUILD_NUMBER
