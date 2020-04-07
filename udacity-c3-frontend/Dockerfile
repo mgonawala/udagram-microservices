@@ -14,4 +14,5 @@ RUN ionic build
 ## Run 
 FROM nginx:alpine
 #COPY www /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
 COPY --from=ionic /usr/src/app/www /usr/share/nginx/html
