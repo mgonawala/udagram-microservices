@@ -22,9 +22,9 @@ install:
 
 after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-  - docker tag $DOCKER_USER/frontend $DOCKER_USER/frontend:$TRAVIS_BUILD_NUMBER
-  - docker tag $DOCKER_USER/backend-user $DOCKER_USER/backend-user:$TRAVIS_BUILD_NUMBER
-  - docker tag $DOCKER_USER/backend-feed $DOCKER_USER/backend-feed:$TRAVIS_BUILD_NUMBER
-  - docker push $DOCKER_USER/frontend:$TRAVIS_BUILD_NUMBER
-  - docker push $DOCKER_USER/backend-feed:$TRAVIS_BUILD_NUMBER
-  - docker push $DOCKER_USER/backend-user:$TRAVIS_BUILD_NUMBER
+  - docker tag $DOCKER_USER/frontend $DOCKER_USER/frontend:latest
+  - docker tag $DOCKER_USER/backend-user $DOCKER_USER/backend-user:latest
+  - docker tag $DOCKER_USER/backend-feed $DOCKER_USER/backend-feed:latest
+  - docker push $DOCKER_USER/frontend:latest
+  - docker push $DOCKER_USER/backend-feed:latest
+  - docker push $DOCKER_USER/backend-user:latest

@@ -15,7 +15,7 @@ spec:
         service: backend-feed
     spec:
       containers:
-      - image: mohinigonawala90/backend-feed:7
+      - image: mohinigonawala90/backend-feed:latest
         name: backend-feed
         imagePullPolicy: Always
         env:

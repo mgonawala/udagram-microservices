@@ -15,7 +15,7 @@ spec:
         service: backend-user
     spec:
       containers:
-      - image: mohinigonawala90/backend-user:7
+      - image: mohinigonawala90/backend-user:latest
         name: backend-user
         ports:
         - containerPort: 8080  
