@@ -13,6 +13,7 @@ RUN ionic build
 
 ## Run 
 FROM nginx:alpine
+RUN apk add --no-cache curl
 #COPY www /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/nginx.conf
+#COPY nginx.conf /etc/nginx/nginx.conf
 COPY --from=ionic /usr/src/app/www /usr/share/nginx/html
