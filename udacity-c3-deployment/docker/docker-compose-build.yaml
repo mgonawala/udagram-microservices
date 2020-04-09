@@ -1,9 +1,5 @@
 version: "3"
 services:
-  reverseproxy:
-    build:
-      context: .
-    image: mohinigonawala90/reverseproxy 
   backend_user:
     build:
       context: ../../udacity-c3-restapi-user
@@ -12,7 +8,3 @@ services:
     build:
       context: ../../udacity-c3-restapi-feed  
     image: mohinigonawala90/backend-feed
-  frontend:
-    build:
-      context: ../../udacity-c3-frontend  
-    image: mohinigonawala90/frontend
