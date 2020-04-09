@@ -1,3 +1,5 @@
+#!/bin/bash
+
 $(git diff --name-only ${TRAVIS_COMMIT_RANGE} | grep ../../udacity-c3-restapi-feed/Dockerfile > /dev/null)
 dockerfile_status=$?
 
