@@ -50,7 +50,7 @@ git clone https://github.com/mgonawala/udagram-microservices.git
 Build docker images for each service
 ```
 cd udacity-c3-deployment/docker
-docker-compose -f docker-compose-build.yaml
+docker-compose -f docker-compose-build.yaml build
 ```
 
 Check docker images on local docker registry after successful build.
@@ -58,6 +58,7 @@ Check docker images on local docker registry after successful build.
 ````
 docker images
 ````
+![docker-images][Screenshots/docker-images.png]
 
 Set Environment variables
 
@@ -95,6 +96,7 @@ docker push your_docker_username/imagename:tag
 
 Check your docker images in docker hub registry
 
+![docker-images][Screenshots/docker-hub.png]
 
 ## Deploy application on Local cluster using Minikube
 
@@ -104,21 +106,26 @@ Install istio  `` sh setup-istio.sh``
 
 Edit aws-secret.yaml file with your base64 encoded ~/.aws/credentials file
 
+`cat ~/.aws/credentials | base64 `
+
 Edit env-cofnigmap.yaml file with your connection details
 
 Edit env-secret file with your DB password and username 
 
+`echo username| base64 ; echo passowrd | base64 `
+
 Configure services & gateway on cluster with below command
 ```
-kubectl apply -f /udacity-c3-deployment/kubconfig/aws-secret.yaml
-kubectl apply -f /udacity-c3-deployment/kubconfig/env-configmap.yaml
-kubectl apply -f /udacity-c3-deployment/kubconfig/env-secret.yaml
-kubectl apply -f /udacity-c3-deployment/kubconfig/myappinfo.yaml
-kubectl apply -f /udacity-c3-deployment/kubconfig/destinaction-rules.yaml
-kubectl apply -f /udacity-c3-deployment/kubconfig/myapp-gateway.yaml
+kubectl apply -f udacity-c3-deployment/kubconfig/aws-secret.yaml
+kubectl apply -f udacity-c3-deployment/kubconfig/env-configmap.yaml
+kubectl apply -f udacity-c3-deployment/kubconfig/env-secret.yaml
+kubectl apply -f udacity-c3-deployment/kubconfig/myappinfo.yaml
+kubectl apply -f udacity-c3-deployment/kubconfig/frontend-deployment.yaml
+kubectl apply -f udacity-c3-deployment/kubconfig/destination-rules.yaml
+kubectl apply -f udacity-c3-deployment/kubconfig/myapp-gateway.yaml
 ```
 
-Check your deployments
+Check your pods
 ```
 kubectl get deployment
 ```
@@ -127,10 +134,24 @@ check your services
 ```
 kubectl get svc
 ```
+
 Browse to ``http://localhost:8100/`` to check if your application is running.
 
-## Deployment on EKS
+## Rolling update
 
-Add additional notes about how to deploy this on a live system
+This section demonstrates how to rollout update with little downtime.
+To update the deployed image of feed service issue following command
 
+`Kubectl set image deployment/feed-v1 feed=mohinigonawala90/feed:v2.0.0`
+`deployment.extensions/frontend image updated`
+
+`curl http://localhost:8080/feed/v0/feed -H 'api-version: v2.0.0''`
+
+Now we have deployed version v2 of feed service.
+To route traffic to v2 version need to pass a header api-version: v2.0.0.
+All other traffic will be routed to feed version v1.
+This demonstrates the use of AB dpeloyment with the help me Istio.
+
+
+## CI/CD with travis CI
 
