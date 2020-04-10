@@ -1,5 +1,7 @@
 # Udagram Microservices
 
+![Build Status](https://travis-ci.com/mgonawala/udagram-microservices.svg?branch=feature-travis-ci)
+
 This project is a part of Udacity Cloud Developer nanodegree.
 Main goal is to learn how to divide a monolith application into microservices.
 
@@ -33,7 +35,7 @@ These instructions will help you set up a copy of the project and run it on loca
   
     [AWS cli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
   
-   [Eksctl](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
+    [Eksctl](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
   
     [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
  
@@ -42,79 +44,82 @@ These instructions will help you set up a copy of the project and run it on loca
 
 ### Instalation & setup
 
-Clone this project on your local machine
+* Clone this project on your local machine
+
 ````
 git clone https://github.com/mgonawala/udagram-microservices.git
 ````
 
-Build docker images for each service
+* Build docker images for each service
 ```
 cd udacity-c3-deployment/docker
 docker-compose -f docker-compose-build.yaml build
 ```
 
-Check docker images on local docker registry after successful build.
+* Check docker images on local docker registry after successful build.
 
 ````
 docker images
 ````
 ![docker-images](Screenshots/docker-images.png)
 
-Set Environment variables
+* Set Environment variables
 
 ````
-      POSTGRESS_USERNAME: "your_username"
-      POSTGRESS_PASSWORD: "your_password" 
-      POSTGRESS_DB: "your_db" 
-      POSTGRESS_HOST: "your_db_host" 
-      AWS_REGION: "your_aws_region" 
-      AWS_PROFILE: "your_profile" 
-      AWS_BUCKET: "your_bucket"
-      JWT_SECRET: "any_long_secret_key"
+POSTGRESS_USERNAME: "your_username"
+POSTGRESS_PASSWORD: "your_password" 
+POSTGRESS_DB: "your_db" 
+POSTGRESS_HOST: "your_db_host" 
+AWS_REGION: "your_aws_region" 
+AWS_PROFILE: "your_profile" 
+AWS_BUCKET: "your_bucket"
+JWT_SECRET: "any_long_secret_key"
 ````
 
-Run whole application
+* Run whole application
 
 ````
 docker-compose up
 ````
 
-Check if you application is running
+* Check if you application is running
 
 ```
 curl http://localhost:8100/api/v0/feed
 ```
 
-Go to localhost:8100 in browser and see if it is working as per below.
+* Go to localhost:8100 in browser and see if it is working as per below.
 
-push docker images to docker hub registry
+  ![local-sit](Screenshots/local-site.png)
+  
+* push docker images to docker hub registry
 
 ```
 docker login -u username -p password
 docker push your_docker_username/imagename:tag
 ```
 
-Check your docker images in docker hub registry
+* Check your docker images in docker hub registry
 
 ![docker-images](Screenshots/docker-hub.png)
 
 ## Deploy application on Local cluster using Minikube
 
-Follow this link to setup a local cluster using Minikube [link](https://kubernetes.io/docs/setup/learning-environment/minikube/#minikube-features)
+* Follow this link to setup a local cluster using Minikube [link](https://kubernetes.io/docs/setup/learning-environment/minikube/#minikube-features)
 
-Install istio  `` sh setup-istio.sh``
+* Install istio  `` sh setup-istio.sh``
 
-Edit aws-secret.yaml file with your base64 encoded ~/.aws/credentials file
+* Edit aws-secret.yaml file with your base64 encoded ~/.aws/credentials file
 
 `cat ~/.aws/credentials | base64 `
 
-Edit env-cofnigmap.yaml file with your connection details
+* Edit env-cofnigmap.yaml file with your connection details
 
-Edit env-secret file with your DB password and username 
+* Edit env-secret file with your DB password and username 
 
 `echo username| base64 ; echo passowrd | base64 `
 
-Configure services & gateway on cluster with below command
+*  Configure services & gateway on cluster with below commands. It will set up deployemnt, services and gateway.
 ```
 kubectl apply -f udacity-c3-deployment/kubconfig/aws-secret.yaml
 kubectl apply -f udacity-c3-deployment/kubconfig/env-configmap.yaml
@@ -125,27 +130,21 @@ kubectl apply -f udacity-c3-deployment/kubconfig/destination-rules.yaml
 kubectl apply -f udacity-c3-deployment/kubconfig/myapp-gateway.yaml
 ```
 
-Check your pods
+* Check your deployments
 ```
 kubectl get deployment
 ```
 
 ![deployments](Screenshots/k8s-deployments.png)
 
-_Here we have two versions of Feed service deployed.
-Traffic will be routed to specific feed service based on Header parameter **api-version**.
-**api-version** **v1.0.0** will be routed to feed-v1.
-**api-version** **v2.0.0** will be routed to feed-v2.
-If no header is provided, it defaults to feed-v1._ 
-
-check your services
+* check your services
 ```
 kubectl get svc
 ```
 
 ![services](Screenshots/k8s-service.png)
 
-Browse to ``http://localhost:8100/`` to check if your application is running.
+* Browse to ``http://localhost:8100/`` to check if your application is running.
 
 ![local-site](Screenshots/local-site.png)
 
@@ -159,15 +158,21 @@ To update the deployed image of feed service, issue following command
 
 `deployment.extensions/frontend image updated`
 
-`curl http://localhost:8080/feed/v0/feed -H 'api-version: v2.0.0''`
-
-Now we have deployed version v2 of feed service.
-To route traffic to v2 version need to pass a header api-version: v2.0.0.
-All other traffic will be routed to feed version v1.
-This demonstrates the use of AB dpeloyment with the help me Istio.
-
 ![update](Screenshots/image-rollout.png)
 ![update](Screenshots/image-rollout-2.png)
+
+
+
+>_Here we have two versions of Feed service deployed.
+Traffic will be routed to specific feed service based on Header parameter **api-version**.
+**api-version** **v1.0.0** will be routed to feed-v1.
+**api-version** **v2.0.0** will be routed to feed-v2.
+If no header is provided, it defaults to feed-v1._ 
+
+
+![feed-v1](Screenshots/feed-v1.png)
+![feed-v2](Screenshots/feed-v2.png)
+
 
 ## CI/CD with travis CI
 
@@ -176,7 +181,7 @@ Each commit on the GitHUB will trigger a build & deploy to AWS EKS cluster.
 
 ![travis](Screenshots/travis.png)
 
-###To setup your own pipeline please follow below steps:
+## To setup your own pipeline please follow below steps:
 
 1.  Go to Travis-ci.com and sign up with your GitHub account.
 2.  Accept the authorization of Travis CI. You'll be redirected to GitHUB.

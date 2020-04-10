@@ -1,15 +1,15 @@
 version: "3"
 services:
   reverseproxy:
-      image: mohinigonawala90/reverseproxy
+      image: mohinigonawala90/reverseproxy:latest
       ports:
-          - 8080:8080
+          - 80:80
       restart: always
       depends_on:
         - backend-user
-        - backend-feed     
+        - backend-feed
   backend-user:
-    image: mohinigonawala90/udacity-restapi-user
+    image: mohinigonawala90/backend-user
     volumes:
       - $HOME/.aws:/root/.aws
     environment:
@@ -23,7 +23,7 @@ services:
       JWT_SECRET: $JWT_SECRET
       URL: "http://localhost:8100"
   backend-feed:
-    image: mohinigonawala90/udacity-restapi-feed
+    image: mohinigonawala90/backend-feed
     volumes:
       - $HOME/.aws:/root/.aws
     environment:
@@ -37,6 +37,6 @@ services:
       JWT_SECRET: $JWT_SECRET
       URL: "http://localhost:8100"
   frontend:
-    image: mohinigonawala90/udacity-frontend
+    image: mohinigonawala90/frontend:local
     ports:
       - "8100:80"
