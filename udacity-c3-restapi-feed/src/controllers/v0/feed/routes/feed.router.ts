@@ -35,6 +35,7 @@ router.get('/', async (req: Request, res: Response) => {
                 item.url = AWS.getGetSignedUrl(item.url);
             }
     });
+    console.log('Checking Console Message');
     res.send(items);
 });
 
