@@ -81,10 +81,10 @@ docker-compose up
 Check if you application is running
 
 ```
-curl http://localhsot:8100/api/v0/feed
+curl http://localhost:8100/api/v0/feed
 ```
 
-Go to loalhost:8100 in browser and see if it is working as per below.
+Go to localhost:8100 in browser and see if it is working as per below.
 
 push docker images to docker hub registry
 
@@ -93,61 +93,44 @@ docker login -u username -p password
 docker push your_docker_username/imagename:tag
 ```
 
-Check your docker images in docke hub registry
+Check your docker images in docker hub registry
 
 
-## Deploy application AWS EKS using EKSCTL, KUBECTL
+## Deploy application on Local cluster using Minikube
 
+Follow this link to setup a local cluster using Minikube [link](https://kubernetes.io/docs/setup/learning-environment/minikube/#minikube-features)
 
+Install istio  `` sh setup-istio.sh``
 
-Explain how to run the automated tests for this system
+Edit aws-secret.yaml file with your base64 encoded ~/.aws/credentials file
 
-### Break down into end to end tests
+Edit env-cofnigmap.yaml file with your connection details
 
-Explain what these tests test and why
+Edit env-secret file with your DB password and username 
 
+Configure services & gateway on cluster with below command
 ```
-Give an example
+kubectl apply -f /udacity-c3-deployment/kubconfig/aws-secret.yaml
+kubectl apply -f /udacity-c3-deployment/kubconfig/env-configmap.yaml
+kubectl apply -f /udacity-c3-deployment/kubconfig/env-secret.yaml
+kubectl apply -f /udacity-c3-deployment/kubconfig/myappinfo.yaml
+kubectl apply -f /udacity-c3-deployment/kubconfig/destinaction-rules.yaml
+kubectl apply -f /udacity-c3-deployment/kubconfig/myapp-gateway.yaml
 ```
 
-### And coding style tests
-
-Explain what these tests test and why
-
+Check your deployments
 ```
-Give an example
+kubectl get deployment
 ```
 
-## Deployment
+check your services
+```
+kubectl get svc
+```
+Browse to ``http://localhost:8100/`` to check if your application is running.
+
+## Deployment on EKS
 
 Add additional notes about how to deploy this on a live system
 
-## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
-
-## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
