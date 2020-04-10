@@ -3,16 +3,16 @@ services:
   reverseproxy:
     build:
       context: .
-    image: mohinigonawala90/reverseproxy 
+    image: mohinigonawala90/reverseproxy
   backend_user:
     build:
       context: ../../udacity-c3-restapi-user
-    image: mohinigonawala90/udacity-restapi-user
+    image: mohinigonawala90/backend-user
   backend_feed:
     build:
       context: ../../udacity-c3-restapi-feed  
-    image: mohinigonawala90/udacity-restapi-feed
+    image: mohinigonawala90/backend-feed
   frontend:
     build:
-      context: ../../udacity-c3-frontend  
-    image: mohinigonawala90/udacity-frontend
+      context: ../../udacity-c3-frontend
+    image: mohinigonawala90/frontend:local
