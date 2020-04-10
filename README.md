@@ -58,7 +58,7 @@ Check docker images on local docker registry after successful build.
 ````
 docker images
 ````
-![docker-images][Screenshots/docker-images.png]
+![docker-images](Screenshots/docker-images.png)
 
 Set Environment variables
 
@@ -96,7 +96,7 @@ docker push your_docker_username/imagename:tag
 
 Check your docker images in docker hub registry
 
-![docker-images][Screenshots/docker-hub.png]
+![docker-images](Screenshots/docker-hub.png)
 
 ## Deploy application on Local cluster using Minikube
 
@@ -130,19 +130,33 @@ Check your pods
 kubectl get deployment
 ```
 
+![deployments](Screenshots/k8s-deployments.png)
+
+_Here we have two versions of Feed service deployed.
+Traffic will be routed to specific feed service based on Header parameter **api-version**.
+**api-version** **v1.0.0** will be routed to feed-v1.
+**api-version** **v2.0.0** will be routed to feed-v2.
+If no header is provided, it defaults to feed-v1._ 
+
 check your services
 ```
 kubectl get svc
 ```
 
+![services](Screenshots/k8s-service.png)
+
 Browse to ``http://localhost:8100/`` to check if your application is running.
+
+![local-site](Screenshots/local-site.png)
+
 
 ## Rolling update
 
 This section demonstrates how to rollout update with little downtime.
-To update the deployed image of feed service issue following command
+To update the deployed image of feed service, issue following command
 
-`Kubectl set image deployment/feed-v1 feed=mohinigonawala90/feed:v2.0.0`
+`Kubectl set image deployment/feed-v1 feed=mohinigonawala90/backend-feed:v2`
+
 `deployment.extensions/frontend image updated`
 
 `curl http://localhost:8080/feed/v0/feed -H 'api-version: v2.0.0''`
@@ -152,6 +166,32 @@ To route traffic to v2 version need to pass a header api-version: v2.0.0.
 All other traffic will be routed to feed version v1.
 This demonstrates the use of AB dpeloyment with the help me Istio.
 
+![update](Screenshots/image-rollout.png)
+![update](Screenshots/image-rollout-2.png)
 
 ## CI/CD with travis CI
 
+This application is configured with Travis CI for continuous Integration/continuous deployment.
+Each commit on the GitHUB will trigger a build & deploy to AWS EKS cluster.
+
+![travis](Screenshots/travis.png)
+
+###To setup your own pipeline please follow below steps:
+
+1.  Go to Travis-ci.com and sign up with your GitHub account.
+2.  Accept the authorization of Travis CI. You'll be redirected to GitHUB.
+3.  Click on your profile picture in the top right of your Travis Dashboard, click Settings, and toggle the repositories you want to use with Travis CI.
+4.  Set environment variables in Travis DOCKER_USER and DOCKER_PASSWORD. These are referred in .travis.yaml file.
+
+If you have a cloud cluster enabled, set below environment variables.
+
+5.  EKS_CA = `$(kubectl config view --flatten --output=json \
+                     | jq --raw-output '.clusters[0] .cluster ["certificate-authority-data"]')`
+6.  EKS_CLUSTER_HOST = `$(kubectl config view --flatten --output=json \
+                               | jq --raw-output '.clusters[0] .cluster ["server"]')`
+7.  EKS_CLUSTER_NAME = Your_cluster_name
+8.  EKS_CLUSTER_USER_NAME = Your_cluster_user_name
+9.  TOKEN = `kubectl get secret "${SECRET_NAME}" --namespace "${NAMESPACE}" -o json | jq -r '.data["token"]' | base64 -D`
+    SECRET will be your service-account-token
+10. Make sure your service account has roles attached to list, patch, udpate deployemnt.
+11. Run `kubctl udacity-d3-deployment/kubconfig/roleconfig.yaml` to set up roles.
