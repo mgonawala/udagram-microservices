@@ -12,7 +12,7 @@ services:
     build:
       context: ../../udacity-c3-restapi-feed  
     image: mohinigonawala90/backend-feed
-  backend-orders-api:
+  frontend:
     build:
-      context: ../../restapi-order
-    image: mohinigonawala90/backend-order:latest
+      context: ../../udacity-c3-frontend
+    image: mohinigonawala90/frontend:local

@@ -3,28 +3,25 @@ services:
   reverseproxy:
       image: mohinigonawala90/reverseproxy:latest
       ports:
-          - 8100:8080
+          - 80:80
       restart: always
       depends_on:
         - backend-user
         - backend-feed
   backend-user:
     image: mohinigonawala90/backend-user
-    container_name: backend-user
     volumes:
       - $HOME/.aws:/root/.aws
     environment:
       POSTGRESS_USERNAME: $POSTGRESS_USERNAME
       POSTGRESS_PASSWORD: $POSTGRESS_PASSWORD 
-      POSTGRESS_DB: $SHOPPING_DB
+      POSTGRESS_DB: $POSTGRESS_DB 
       POSTGRESS_HOST: $POSTGRESS_HOST 
       AWS_REGION: $AWS_REGION 
       AWS_PROFILE: $AWS_PROFILE 
       AWS_BUCKET: $AWS_BUCKET
       JWT_SECRET: $JWT_SECRET
       URL: "http://localhost:8100"
-    env_file:
-      - .env
   backend-feed:
     image: mohinigonawala90/backend-feed
     volumes:
@@ -32,37 +29,14 @@ services:
     environment:
       POSTGRESS_USERNAME: $POSTGRESS_USERNAME
       POSTGRESS_PASSWORD: $POSTGRESS_PASSWORD 
-      POSTGRESS_DB: $SHOPPING_DB
+      POSTGRESS_DB: $POSTGRESS_DB 
       POSTGRESS_HOST: $POSTGRESS_HOST 
       AWS_REGION: $AWS_REGION 
       AWS_PROFILE: $AWS_PROFILE 
       AWS_BUCKET: $AWS_BUCKET
       JWT_SECRET: $JWT_SECRET
       URL: "http://localhost:8100"
-    env_file:
-      - .env
-  backend-orders-api:
-    container_name: backend-order
-    image: mohinigonawala90/backend-order:latest
+  frontend:
+    image: mohinigonawala90/frontend:local
     ports:
-      - 8585:8080
-    restart: always
-    volumes:
-      - $HOME/.aws:/root/.aws
-    depends_on:
-      - backend-user
-    links:
-      - backend-user
-    environment:
-      POSTGRESS_USERNAME: $POSTGRESS_USERNAME
-      POSTGRESS_PASSWORD: $POSTGRESS_PASSWORD
-      SHOPPING_DB: $SHOPPING_DB
-      POSTGRESS_HOST: $POSTGRESS_HOST
-      AWS_REGION: $AWS_REGION
-      AWS_PROFILE: $AWS_PROFILE
-      AWS_BUCKET: $AWS_BUCKET
-      JWT_SECRET: $JWT_SECRET
-      USERS_API: "http://backend-user:8080/api/v0/users/auth"
-      USERS_API_URL: "verification"
-    env_file:
-      - .env
+      - "8100:80"
